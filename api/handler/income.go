@@ -30,12 +30,6 @@ import (
 // @Router /v1/income [post]
 func (h *Handler) CreateIncome(c *gin.Context) {
 
-	password := c.GetHeader("Password")
-	if password != "1234" {
-		handleResponse(c, http.StatusUnauthorized, "The request requires user authentication.")
-		return
-	}
-
 	var createIncome models.CreateIncome
 	err := c.ShouldBindJSON(&createIncome)
 	if err != nil {
@@ -45,6 +39,15 @@ func (h *Handler) CreateIncome(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), config.CtxTimeout)
 	defer cancel()
+
+	// last income -> increment ID
+
+	// if len(lastIncome) <= 0 {
+	// 	incrementID = "P-0000001"
+	// } else {
+	// 	increment 002
+	// 	0003
+	// }
 
 	resp, err := h.strg.Income().Create(ctx, &createIncome)
 	if err != nil {

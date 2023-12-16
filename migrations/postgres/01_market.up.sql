@@ -11,10 +11,6 @@ CREATE TABLE "user" (
     "updated_at" TIMESTAMP
 );
 
-
-
-
-
 -- branch
 CREATE TABLE branch (
     id UUID PRIMARY KEY,
@@ -31,7 +27,6 @@ CREATE TABLE sale_point (
     id UUID PRIMARY KEY,
     branch_id UUID NOT NULL REFERENCES branch(id),
     name VARCHAR(255) NOT NULL, 
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 
@@ -48,7 +43,6 @@ CREATE TABLE employee (
     branch_id UUID NOT NULL REFERENCES branch(id),
     salepoint_id UUID NOT NULL REFERENCES sale_point(id),
     user_type VARCHAR(20), 
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -59,7 +53,6 @@ CREATE TABLE supplier (
     name VARCHAR(255) NOT NULL,
     phone_number VARCHAR(20),
     is_active BOOLEAN, 
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -69,7 +62,6 @@ CREATE TABLE category (
     id UUID PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     parent_id UUID REFERENCES category(id), 
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -82,7 +74,6 @@ CREATE TABLE product (
     category_id UUID NOT NULL REFERENCES category(id),
     barcode VARCHAR(50),
     price DECIMAL(10, 2), 
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -94,7 +85,6 @@ CREATE TABLE income (
     supplier_id UUID NOT NULL REFERENCES supplier(id),
     date_time TIMESTAMP,
     status VARCHAR(20), 
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -108,7 +98,6 @@ CREATE TABLE income_product (
     barcode VARCHAR(50),
     quantity BIGINT,
     income_price DECIMAL(10, 2), 
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -122,7 +111,6 @@ CREATE TABLE remainder (
     barcode VARCHAR(50),
     price_income DECIMAL(10, 2),
     quantity INT, 
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -137,7 +125,22 @@ CREATE TABLE shift (
     status VARCHAR(20) CHECK (Status IN ('New', 'Open', 'Closed')),
     open_shift  TIMESTAMP,
     close_shift TIMESTAMP, 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
 
+
+-- transaction
+CREATE TABLE transaction (
+    id UUID PRIMARY KEY,
+    shift_id UUID NOT NULL REFERENCES shift(id),
+    cash  DECIMAL(10, 2) DEFAULT 0,
+    uzcard  DECIMAL(10, 2) DEFAULT 0,
+    payme  DECIMAL(10, 2) DEFAULT 0,
+    click  DECIMAL(10, 2) DEFAULT 0,
+    humo  DECIMAL(10, 2) DEFAULT 0,
+    apelsin  DECIMAL(10, 2) DEFAULT 0,
+    total_amount DECIMAL(10, 2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -153,11 +156,9 @@ CREATE TABLE sale (
     employee_id UUID NOT NULL REFERENCES employee(id),
     barcode VARCHAR(50),
     status VARCHAR(20), 
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
-
 
 
 -- sale_products
@@ -174,7 +175,6 @@ CREATE TABLE sale_products (
     discount DECIMAL(5, 2),
     price DECIMAL(10, 2),
     total_amount DECIMAL(10, 2), 
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -190,22 +190,6 @@ CREATE TABLE payment (
     humo DECIMAL(10, 2),
     apelsin DECIMAL(10, 2),
     total_amount DECIMAL(10, 2), 
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP
-);
-
--- transaction
-CREATE TABLE transaction (
-    id UUID PRIMARY KEY,
-    shift_id UUID NOT NULL REFERENCES shift(id),
-    cash  DECIMAL(10, 2) DEFAULT 0,
-    uzcard  DECIMAL(10, 2) DEFAULT 0,
-    payme  DECIMAL(10, 2) DEFAULT 0,
-    click  DECIMAL(10, 2) DEFAULT 0,
-    humo  DECIMAL(10, 2) DEFAULT 0,
-    apelsin  DECIMAL(10, 2) DEFAULT 0,
-    total_amount DECIMAL(10, 2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );

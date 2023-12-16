@@ -3,11 +3,13 @@ package handler
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"net/http"
 
 	"market_system/config"
 	"market_system/models"
 	"market_system/pkg/helpers"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,18 +27,27 @@ import (
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Router /v1/sale [post]
 func (h *Handler) CreateSale(c *gin.Context) {
-
-	password := c.GetHeader("Password")
-	if password != "1234" {
-		handleResponse(c, http.StatusUnauthorized, "The request requires user authentication.")
-		return
-	}
-
 	var createSale models.CreateSale
 	err := c.ShouldBindJSON(&createSale)
 	if err != nil {
 		handleResponse(c, 400, "ShouldBindJSON err:"+err.Error())
 		return
+	}
+
+	cashTable, err := h.strg.Shift().GetList(context.Background(), &models.GetListShiftRequest{
+		Limit: 1,
+		Query: fmt.Sprintf(" AND branch_id = %s", createSale.BranchID),
+	})
+	if err != nil {
+		handleResponse(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	if len(cashTable.Shift) > 0 {
+		if cashTable.Shift[0].Status == "finished" {
+			handleResponse(c, http.StatusBadRequest, "У вас нет открытых смена.")
+			return
+		}
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), config.CtxTimeout)

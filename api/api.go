@@ -109,6 +109,9 @@ func SetUpApi(r *gin.Engine, cfg *config.Config, strg storage.StorageI, cache *r
 	v1.PUT("/sale/:id", handler.UpdateSale)
 	v1.DELETE("/sale/:id", handler.DeleteSale)
 
+	v1.GET("/sale/scan-barcode/:sale_id", handler.SaleScanBarcode)
+	v1.GET("/dosale/:sale_id", handler.Dosale)
+
 	//sale_product
 	v1.POST("/sale_products", handler.CreateSaleProduct)
 	v1.GET("/sale_products/:id", handler.GetByIDSaleProduct)
